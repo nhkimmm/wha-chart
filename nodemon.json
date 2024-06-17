@@ -1,0 +1,5 @@
+{
+  "watch": ["src"],
+  "ext": "ts, css, html",
+  "exec": "tsc && cp src/index.html dist/index.html && cp -r src/css dist/ && node server.js"
+}

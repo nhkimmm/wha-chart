@@ -1,0 +1,24 @@
+div#widget-layout {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 400px));
+  grid-template-rows: repeat(auto-fill, 240px);
+}
+
+div.chart-box {
+  width: 100%;
+  height: 100%;
+}
+
+canvas.chart-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+div.loading-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

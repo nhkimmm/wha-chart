@@ -1,10 +1,9 @@
 import calculateYTicks from "../utils/calculateYTicks.js";
 
-class BarChart {
+class SeriesBarChart {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
-  private data: number[];
-  private labels: string[];
+  private data: Array<{ time: number; value: number }>;
   private chartWidth: number;
   private chartHeight: number;
   private barWidth: number;
@@ -16,13 +15,12 @@ class BarChart {
   private paddingRight: number;
   private paddingTop: number;
 
-  constructor(canvasId: string, data: number[], labels: string[]) {
+  constructor(canvasId: string, data: Array<{ time: number; value: number }>) {
     this.canvas = document.querySelector(
       `#${canvasId} canvas.chart-canvas`
     ) as HTMLCanvasElement;
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.data = data;
-    this.labels = labels;
     this.barWidth = 20;
     this.barSpacing = 10;
     this.maxValue = 100;
@@ -47,7 +45,7 @@ class BarChart {
   drawBars(): void {
     this.barWidth = this.getBarWidth(this.chartWidth, this.data.length);
     this.barSpacing = this.barWidth * 0.7;
-    this.data.forEach((value, index) => {
+    this.data.forEach(({ time, value }, index) => {
       const barHeight = value * this.scaleFactor;
       const x =
         this.barSpacing +
@@ -60,13 +58,15 @@ class BarChart {
       this.ctx.fillRect(x, y, this.barWidth, barHeight);
 
       // Draw the labels
-      this.ctx.fillStyle = "black";
-      this.ctx.textAlign = "center";
-      this.ctx.fillText(
-        this.labels[index],
-        x + this.barWidth / 2,
-        this.chartHeight + this.paddingTop + 20
-      );
+      if (time % (1000 * 60) === 0) {
+        this.ctx.fillStyle = "black";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(
+          `${new Date(time).getHours()}:${new Date(time).getMinutes()}`,
+          x + this.barWidth / 2,
+          this.chartHeight + this.paddingTop + 20
+        );
+      }
     });
   }
 
@@ -92,16 +92,14 @@ class BarChart {
       this.ctx.moveTo(this.paddingLeft, fixedY);
       this.ctx.lineTo(this.canvas.width - this.paddingRight, fixedY);
       this.ctx.stroke();
-      this.ctx.textAlign = "right";
-      this.ctx.fillText(String(yTicks[i]), this.paddingLeft / 1.5, fixedY);
     }
   }
 
   drawChart(): void {
-    this.drawYTicks();
     this.drawBars();
     this.drawAxes();
+    this.drawYTicks();
   }
 }
 
-export default BarChart;
+export default SeriesBarChart;
